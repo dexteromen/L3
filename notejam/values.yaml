@@ -1,0 +1,49 @@
+app:
+  replicaCount: 3
+  image: dexteromen/notejam-app:latest
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "250m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30727
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/affinity: "cookie"
+      nginx.ingress.kubernetes.io/session-cookie-name: "route"
+      nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+      nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: notejam.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: notejam-tls
+        hosts:
+          - notejam.com
+
+postgres:
+  image: dexteromen/notejam-db:latest
+  user: postgres
+  password: password
+  db: notejam
+  port: "5432"
+  pvc:
+    storage: 1Gi
+    storageClassName: standard
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi

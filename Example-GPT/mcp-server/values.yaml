@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: dexteromen/mcp-server  # ✅ Replace with your Docker Hub repo
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP  # (or NodePort if needed)
+  port: 5000
+  nodePort: 30007  # Optional: if using NodePort
+
+containerPort: 5000
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
